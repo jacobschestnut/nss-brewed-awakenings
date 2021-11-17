@@ -1,22 +1,31 @@
-import { getEmployees } from "./database.js"
+import { getEmployees, getOrders } from "./database.js"
+
+const orders = getOrders()
+const employees = getEmployees()
 
 document.addEventListener(
     "click",
     (clickEvent) => {
         const itemClicked = clickEvent.target
+        let numberOrders = 0;
+        let employeeName = ""
         if (itemClicked.id.startsWith("employee")) {
-            const [,employeeId] = itemClicked.id.split("--")
-
+            const [, employeeId] = itemClicked.id.split("--")
+            for (const order of orders) {
+                if (order.employeeId === parseInt(employeeId)) {
+                    numberOrders = numberOrders + 1;
+                }
+            }
             for (const employee of employees) {
                 if (employee.id === parseInt(employeeId)) {
-                    window.alert(`${employee.name} sold ${employee.id} product(s).`)
+                    employeeName = employee.name
                 }
             }
         }
+    
+        window.alert(`${employeeName} sold ${numberOrders}`)
     }
 )
-
-const employees = getEmployees()
 
 export const Employees = () => {
     let html = "<ul>"
@@ -29,4 +38,3 @@ export const Employees = () => {
 
     return html
 }
-
